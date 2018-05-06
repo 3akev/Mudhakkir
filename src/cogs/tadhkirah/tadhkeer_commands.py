@@ -18,6 +18,7 @@ class TadhkeerCommands(Cog):
     def __init__(self, bot):
         super().__init__(bot)
         self.client_session = aiohttp.ClientSession()
+        self.default_config['enabled'] = True
 
     @group()
     async def tadhkirah(self, ctx):
