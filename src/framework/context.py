@@ -8,11 +8,11 @@ class ConfigContext(commands.Context):
 
     @property
     def all_commands(self):
-        return [conf.commands for conf in self.config]
+        return [conf.commands for conf in self.config.values()]
 
     @property
     def cog_config(self):
-        return self.config.get(str(type(self.cog)))
+        return self.config.get(self.cog.name)
 
     @property
     def cmd_config(self):

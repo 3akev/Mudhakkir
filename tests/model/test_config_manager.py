@@ -8,14 +8,14 @@ from model.config_manager import ConfigManager
 
 cog_conf1 = {'x': 3, 'y': 64, 'commands': {}}
 cmd_conf1 = {'cool': True}
-cls1 = MagicMock(default_config=cog_conf1,
-                 x=ArgCommand("test1", lambda: None, default_config=cmd_conf1))
+cls1 = MagicMock(default_config=cog_conf1)
+type(cls1).x = ArgCommand("test1", lambda: None, default_config=cmd_conf1)
 cls1.__str__ = lambda x: 'cls1'
 
 cog_conf2 = {'x': 435, 'y': 1341, 'commands': {}}
 cmd_conf2 = {'cost': 50}
-cls2 = MagicMock(default_config=cog_conf2,
-                 x=ArgCommand("test2", lambda: None, default_config=cmd_conf2))
+cls2 = MagicMock(default_config=cog_conf2)
+type(cls2).y = ArgCommand("test2", lambda: None, default_config=cmd_conf2)
 cls2.__str__ = lambda x: 'cls2'
 
 saved_conf = {

@@ -1,17 +1,25 @@
-from attrdict import AttrDict
+from munch import AutoMunch
 
 
-class RecursiveAttrDict(AttrDict):
+class RecursiveAttrDict(AutoMunch):
     def __getitem__(self, item):
         ret = super().__getitem__(item)
         if isinstance(ret, dict):
-            return RecursiveAttrDict(ret)
-        else:
-            return ret
+            ret = RecursiveAttrDict(ret)
+            setattr(self, item, ret)
+
+        return ret
 
     def get(self, k, d=None):
         ret = super().get(k, d)
         if isinstance(ret, dict):
-            return RecursiveAttrDict(ret)
-        else:
-            return ret
+            ret = RecursiveAttrDict(ret)
+            setattr(self, k, ret)
+
+        return ret
+
+    def values(self):
+        return (
+            (RecursiveAttrDict(x) if isinstance(x, dict) else x)
+            for x in super().values()
+        )

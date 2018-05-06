@@ -11,10 +11,10 @@ class ArgCommand(commands.Command):
         self.default_config = kwargs.get('default_config')
 
     async def _verify_checks(self, ctx):
-        if not ctx.config[self.cog_name].enabled:
-            raise DisabledCommand("Cog {} is disabled.".format(ctx.cog))
-        elif not ctx.config[self.cog_name].commands[self.name].enabled:
-            raise DisabledCommand("Command {} is disabled.".format(self))
+        if not ctx.cog_config.enabled:
+            raise DisabledCommand("Cog {} is disabled.".format(ctx.cog.name))
+        elif not ctx.cmd_config.enabled:
+            raise DisabledCommand("Command {} is disabled.".format(self.name))
         else:
             super()._verify_checks(ctx)
 
@@ -42,7 +42,11 @@ class ArgCommand(commands.Command):
             fmt = 'Callback for {0.name} command is missing "ctx" parameter.'
             raise discord.ClientException(fmt.format(self))
 
-        raw_args, raw_kwargs = argparser.parse(ctx.view.buffer)
+        # skip command name
+        ctx.view.get_word()
+        ctx.view.skip_ws()
+
+        raw_args, raw_kwargs = argparser.parse(ctx.view.buffer[ctx.view.index:])
 
         for name, param in iterator:
             if param.kind is param.POSITIONAL_OR_KEYWORD:  # i.e: normal args

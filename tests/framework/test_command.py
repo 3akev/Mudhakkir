@@ -26,22 +26,22 @@ def cb_keyword_only(ctx, num: int, *, cool, very_cool: bool = True, **kwargs):
 
 test_table = (
     (
-        cb_positional, ("30 thing", [30, 'thing'], {})
+        cb_positional, (".test 30 thing", [30, 'thing'], {})
     ),
     (
-        cb_positional, ("40", [40, 'stuff'], {})
+        cb_positional, (".test 40", [40, 'stuff'], {})
     ),
     (
-        cb_positional, ('num=40 x="cool stuff"', [], {'num': 40, 'x': "cool stuff"})
+        cb_positional, ('.test num=40 x="cool stuff"', [], {'num': 40, 'x': "cool stuff"})
     ),
     (
-        cb_positional, ('40 stuff magic lots of args here dude', [40, "stuff", "magic", "lots", "of", "args", "here", "dude"], {})
+        cb_positional, ('.test 40 stuff magic lots of args here dude', [40, "stuff", "magic", "lots", "of", "args", "here", "dude"], {})
     ),
     (
-        cb_keyword_only, ('90 cool=yep very_cool=False test_driven=True', [90], {'cool': 'yep', 'very_cool': False, 'test_driven': 'True'})
+        cb_keyword_only, ('.test 90 cool=yep very_cool=False test_driven=True', [90], {'cool': 'yep', 'very_cool': False, 'test_driven': 'True'})
     ),
     (
-        cb_keyword_only, ('40 cool=yep', [40], {'cool': 'yep', 'very_cool': True})
+        cb_keyword_only, ('.test 40 cool=yep', [40], {'cool': 'yep', 'very_cool': True})
     )
 )
 
@@ -62,13 +62,13 @@ async def test_parse_arguments_parses_arguments(event_loop):
 
 broken_test_table = (
     (
-        cb_positional, 'word'
+        cb_positional, '.test word'
     ),
     (
-        cb_positional, 'word "another word" keyword=argument'
+        cb_positional, '.test word "another word" keyword=argument'
     ),
     (
-        cb_keyword_only, 'word another'
+        cb_keyword_only, '.test word another'
     )
 )
 
