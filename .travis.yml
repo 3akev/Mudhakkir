@@ -1,8 +1,9 @@
 language: python
 python:
   - "3.6.5"
-cache: pip
 before_install:
-  - pip install -r requirements.txt
-script:
-  ./run_tests.sh
+  - chmod +x run_tests.sh
+before_script:
+  - export PYTHONPATH=$PYTHONPATH:./src
+  - export PYTHONPATH=$PYTHONPATH:./tests
+script: pytest
