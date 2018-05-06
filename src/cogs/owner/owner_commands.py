@@ -11,4 +11,4 @@ class OwnerCommands(Cog):
     @command()
     async def kill(self, ctx):
         await ctx.send("Shutting down...")
-        await self.bot.close()
+        exit()
