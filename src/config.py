@@ -1,6 +1,6 @@
 import os
 
-PREFIX = os.environ.get('DISCORD_TOKEN', ",")
+PREFIX = os.environ.get('PREFIX', ",")
 OwnerIDs = [
     "164200221746790400"
 ]

@@ -11,9 +11,9 @@ class ArgCommand(commands.Command):
         self.default_config = kwargs.get('default_config')
 
     async def _verify_checks(self, ctx):
-        if not ctx.config[ctx.cog].enabled:
+        if not ctx.config[self.cog_name].enabled:
             raise DisabledCommand("Cog {} is disabled.".format(ctx.cog))
-        elif not ctx.config[ctx.cog].commands[self].enabled:
+        elif not ctx.config[self.cog_name].commands[self.name].enabled:
             raise DisabledCommand("Command {} is disabled.".format(self))
         else:
             super()._verify_checks(ctx)

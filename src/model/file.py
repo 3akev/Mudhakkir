@@ -2,9 +2,8 @@ import yaml
 
 import os
 
-from attrdict import AttrDict
-
 from dropboxer import DropBoxer
+from model.recursive_attr_dict import RecursiveAttrDict
 
 
 class YamlFile:
@@ -13,10 +12,10 @@ class YamlFile:
 
     def read(self):
         if not os.path.isfile(self.filename):
-            return AttrDict()
+            return RecursiveAttrDict()
 
         with open(self.filename, 'r', encoding='UTF-8') as f:
-            return AttrDict(yaml.load(f.read()))
+            return RecursiveAttrDict(yaml.load(f.read()))
 
     def write(self, structure):
         os.makedirs(os.path.dirname(self.filename), exist_ok=True)

@@ -9,6 +9,7 @@ from discord.ext import commands
 
 from config import description, PREFIX
 from dropboxer import DropBoxer
+from framework.context import ConfigContext
 from model.config_manager import ConfigManager
 from statics import cogsDir
 
@@ -30,11 +31,15 @@ class Bot(commands.Bot):
         DropBoxer.setLoop(self.loop)
         await DropBoxer.get()
 
-        await self.change_presence(game=discord.Game(name="{}help".format(PREFIX)), status='online')
+        await self.change_presence(activity=discord.Game(name="{}help".format(PREFIX)), status='online')
         self._load_cogs()
         self.populate_configs()
 
         await DropBoxer.uploadLoop()
+
+    async def on_message(self, message):
+        ctx = await self.get_context(message, cls=ConfigContext)
+        await self.invoke(ctx)
 
     def _load_cogs(self):
         print('Loading cogs...')
