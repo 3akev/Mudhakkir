@@ -3,8 +3,10 @@ from framework.cog import Cog
 
 
 class OwnerCommands(Cog):
+    configurable = False
+
     def __init__(self, bot):
-        self.bot = bot
+        super().__init__(bot)
         self.default_config['enabled'] = True
 
     @command()

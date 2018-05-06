@@ -36,3 +36,6 @@ class ConfigManager:
                     conf[cog_key]['commands'][command.name] = command.default_config
 
         self.configs_map[str(guild_id)] = RecursiveAttrDict(conf)
+
+    def save(self, guild_id):
+        YamlFile(os.path.join(storageDir, str(guild_id), 'config.yaml')).write(self.get(guild_id))

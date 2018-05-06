@@ -7,6 +7,10 @@ class ConfigContext(commands.Context):
         return self.bot.configs.get(self.guild.id)
 
     @property
+    def all_commands(self):
+        return [conf.commands for conf in self.config]
+
+    @property
     def cog_config(self):
         return self.config.get(str(type(self.cog)))
 
