@@ -7,7 +7,7 @@ import pytest
 from cogs.tadhkirah.sqlite_manager import SQLiteManager
 from statics import parentDir
 
-db_file = os.path.join(parentDir, 'tests\\tadhkirah.sqlite')
+db_file = os.path.join(parentDir, 'tests/tadhkirah.sqlite')
 
 
 @pytest.fixture
@@ -37,14 +37,14 @@ def test_close_cursor_closes_cursor(sq):
 
 
 def test_add_quran_remove_quran_adds_row_to_quran_table_and_removes_it(sq):
-    sq.add_quran(1, 1)
+    sq.add_quran(1, 1, 2)
 
     c = sq.get_cursor()
     c.execute("SELECT * FROM {tn} WHERE surah_num=1".format(tn=sq.quran_table))
-    assert c.fetchone() == (1, 1, None)
+    assert c.fetchone() == (1, 1, 2)
     sq.close_cursor(c)
 
-    sq.remove_quran(1, 1)
+    sq.remove_quran(1, 1, 2)
 
     c = sq.get_cursor()
     c.execute("SELECT * FROM {tn} WHERE surah_num=1".format(tn=sq.quran_table))
@@ -74,3 +74,8 @@ def test_get_quran_gets_random_quran_row(sq):
 
 def test_get_hadith_gets_random_hadith_row(sq):
     assert sq.get_hadith() is not None
+
+
+def test_get_random_gets_random_row(sq):
+    table, result = sq.get_random()
+    assert result is not None

@@ -34,7 +34,7 @@ saved_conf = {
 def conf(monkeypatch):
     yamlfile = MagicMock()
     yamlfile().read = lambda: saved_conf
-    monkeypatch.setattr('model.config_manager.YamlFile', yamlfile)
+    monkeypatch.setattr('framework.config_manager.YamlFile', yamlfile)
 
     bot = MagicMock()
     cls1_def = deepcopy(cls1)

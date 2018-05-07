@@ -1,8 +1,6 @@
 language: python
 python:
   - "3.6.5"
-before_install:
-  - chmod +x run_tests.sh
 before_script:
   - export PYTHONPATH=$PYTHONPATH:./src
   - export PYTHONPATH=$PYTHONPATH:./tests
