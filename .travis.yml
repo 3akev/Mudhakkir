@@ -1,6 +1,14 @@
 language: python
 python:
   - "3.6.5"
+after_success:
+  - wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh success $WEBHOOK_URL
+after_failure:
+  - wget https://raw.githubusercontent.com/k3rn31p4nic/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh failure $WEBHOOK_URL
 before_script:
   - export PYTHONPATH=$PYTHONPATH:./src
   - export PYTHONPATH=$PYTHONPATH:./tests
