@@ -10,7 +10,7 @@ from discord.ext import commands
 from config import description, PREFIX
 from dropboxer import DropBoxer
 from framework.context import ConfigContext
-from model.config_manager import ConfigManager
+from framework.config_manager import ConfigManager
 from statics import cogsDir
 
 

@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from framework import ArgCommand
-from model.config_manager import ConfigManager
+from framework.config_manager import ConfigManager
 
 cog_conf1 = {'x': 3, 'y': 64, 'commands': {}}
 cmd_conf1 = {'cool': True}
