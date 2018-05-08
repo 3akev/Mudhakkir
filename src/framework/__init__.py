@@ -7,6 +7,6 @@ def command(name=None, conf=None, **attrs):
     return old_command(
         name,
         ArgCommand,
-        default_config=conf or {'enabled': True},
+        default_config=conf,
         **attrs
     )

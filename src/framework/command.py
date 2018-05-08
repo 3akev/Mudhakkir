@@ -8,7 +8,7 @@ from model import argparser
 class ArgCommand(commands.Command):
     def __init__(self, name, callback, **kwargs):
         super().__init__(name, callback, **kwargs)
-        self.default_config = kwargs.get('default_config')
+        self.default_config = kwargs.get('default_config', {'enabled': True})
 
     async def _verify_checks(self, ctx):
         if not ctx.cog_config.enabled:
