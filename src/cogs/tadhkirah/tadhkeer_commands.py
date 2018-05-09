@@ -1,54 +1,60 @@
-from collections import OrderedDict
-
-import aiohttp
-import random
-
 import discord
 from discord.ext.commands import group
 
+from cogs.tadhkirah.sqlite_manager import SQLiteManager
+from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
 from framework.cog import Cog
-from model.recursive_attr_dict import RecursiveAttrDict
 
 
 class TadhkeerCommands(Cog):
-    ayat_in_quran = 6326
-    quran_api_link = 'http://api.alquran.cloud/ayah/{0}/editions/ar,en.sahih'
-    tafsir_url = 'http://quranx.com/Tafsir/Kathir/{0}.{1}'
-
     def __init__(self, bot):
         super().__init__(bot)
-        self.client_session = aiohttp.ClientSession()
+        self.db = SQLiteManager()
+        self.backend = TadhkeerBackend()
+
         self.default_config['enabled'] = True
+        self.default_config['channel_id'] = None
+        self.default_config['interval_in_seconds'] = 86400
 
     @group()
     async def tadhkirah(self, ctx):
         if ctx.invoked_subcommand is not None:
             return
 
-        ayah_num = random.randint(1, self.ayat_in_quran)
-        async with self.client_session.get(self.quran_api_link.format(ayah_num)) as r:
-            resp = await r.json()
+        data = self.db.get_quran()
+        # if table_name == 'quran':
+        embeds = await self.backend.get_quran(*data)
+        # else:
+        #     embed = await self.backend.get_hadith(*data)
 
-        ar = RecursiveAttrDict(resp['data'][0])
-        en = RecursiveAttrDict(resp['data'][1])
+        for embed in embeds:
+            await ctx.send(embed=embed)
 
-        embed = discord.Embed(title='Tafsir', colour=random.randint(0, 16777215))
+    @tadhkirah.command()
+    async def channel(self, ctx, channel: discord.TextChannel):
+        self.default_config['channel_id'] = channel.id
+        self.bot.configs.save(ctx.guild.id)
+        await ctx.send("Alright, I'll be posting reminders in {} from now on.".format(channel.mention))
 
-        fields = OrderedDict()
-        fields['{0} - {1}:{2}'.format(en.surah.name, en.surah.number, en.numberInSurah)] = en.text
+    @tadhkirah.command()
+    async def quran(self, ctx):
+        for embed in await self.backend.get_quran(*self.db.get_quran()):
+            await ctx.send(embed=embed)
 
-        embed.add_field(
-            name='{0} - {1}:{2}'.format(ar.surah.name, ar.surah.number, ar.numberInSurah),
-            value=ar.text,
-            inline=False
-        )
-        embed.add_field(
-            name='{0} - {1}:{2}'.format(en.surah.englishName, en.surah.number, en.numberInSurah),
-            value=en.text,
-            inline=False
-        )
+    @tadhkirah.command()
+    async def hadith(self, ctx):
+        for embed in await self.backend.get_hadith(*self.db.get_hadith()):
+            await ctx.send(embed=embed)
 
-        embed.url = self.tafsir_url.format(ar.surah.number, ar.numberInSurah)
-        embed.set_author(name='Tadhkirah | تذكرة')
+    # submission
+    @tadhkirah.group()
+    async def submit(self, ctx):
+        pass
 
-        await ctx.send(embed=embed)
+    @submit.command()
+    async def quran(self, ctx, surah_num: int, ayah_num: int, ayah_end=None):
+        pass
+
+    @submit.command()
+    async def hadith(self, ctx, book_name: str, book_num: int, hadith_num=None):
+        pass
