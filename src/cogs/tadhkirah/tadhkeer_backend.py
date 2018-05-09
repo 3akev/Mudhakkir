@@ -35,15 +35,17 @@ class TadhkeerBackend:
         embed.set_author(name=author_name)
         return embed
 
-    async def _fetch_quran(self, surah_num: int, ayah_num: int, ayah_end=None):
+    def _get_quran_link(self, surah_num, ayah_num, ayah_end):
         limit = ayah_end - (ayah_num - 1) if ayah_end is not None else 1
         link = self.quran_api_link.format(surah_num, ayah_num - 1, limit)
+        return link
+
+    async def _fetch_quran(self, surah_num: int, ayah_num: int, ayah_end=None):
+        link = self._get_quran_link(surah_num, ayah_num, ayah_end)
         async with self.client_session.get(link) as r:
             return await r.json()
 
-    async def get_quran(self, surah_num: int, ayah_num: int, ayah_end=None):
-        resp = await self._fetch_quran(surah_num, ayah_num, ayah_end)
-
+    def _process_response(self, resp):
         ar = RecursiveAttrDict(resp['data'][0])
         en = RecursiveAttrDict(resp['data'][1])
 
@@ -51,6 +53,11 @@ class TadhkeerBackend:
         en_embed = self._make_quran_embed('Tafsir', en.englishName, en.number, en.ayahs, 'Reminder')
 
         return ar_embed, en_embed
+
+    async def get_quran(self, surah_num: int, ayah_num: int, ayah_end=None):
+        resp = await self._fetch_quran(surah_num, ayah_num, ayah_end)
+
+        return self._process_response(resp)
 
     @staticmethod
     def _clean_whitespace(text):
