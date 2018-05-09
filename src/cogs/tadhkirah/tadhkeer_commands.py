@@ -21,9 +21,9 @@ class TadhkeerCommands(Cog):
         if ctx.invoked_subcommand is not None:
             return
 
-        data = self.db.get_quran()
+        data = self.db.get_hadith()
         # if table_name == 'quran':
-        embeds = await self.backend.get_quran(*data)
+        embeds = await self.backend.get_hadith(*data)
         # else:
         #     embed = await self.backend.get_hadith(*data)
 

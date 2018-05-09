@@ -4,6 +4,7 @@ pyyaml
 pytest
 pytest-asyncio
 git+git://github.com/Rapptz/discord.py@rewrite#egg=discord-py
+beautifulsoup4
 aiohttp==2.2.5
 yarl==1.1.1
 websockets==3.4
