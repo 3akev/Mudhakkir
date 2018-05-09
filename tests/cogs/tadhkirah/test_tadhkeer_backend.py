@@ -16,7 +16,7 @@ def td():
 
 
 def test_process_response_returns_two_correct_embeds(td):
-    def _ensure_embed_valid(embed):
+    def is_embed_valid(embed):
         footer_length = (len(embed.footer.text) if embed.footer else 0)
         assert len(embed.title) < 256
         assert len(embed.description) < 2048
@@ -40,10 +40,8 @@ def test_process_response_returns_two_correct_embeds(td):
             resp = json.loads(f.read())
 
         ar_embed, en_embed = td._process_response(resp)
-        _ensure_embed_valid(ar_embed)
-        _ensure_embed_valid(en_embed)
-
-
+        is_embed_valid(ar_embed)
+        is_embed_valid(en_embed)
 
 
 def test_get_quran_link_formats_quran_link_according_to_api(td):
