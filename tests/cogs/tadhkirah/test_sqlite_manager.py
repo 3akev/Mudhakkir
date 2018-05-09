@@ -7,7 +7,7 @@ import pytest
 from cogs.tadhkirah.sqlite_manager import SQLiteManager
 from statics import parentDir
 
-db_file = os.path.join(parentDir, 'tests/tadhkirah.sqlite')
+db_file = os.path.join(parentDir, 'tests/test_resources/tadhkirah.sqlite')
 
 
 @pytest.fixture
