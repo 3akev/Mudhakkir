@@ -1,8 +1,8 @@
 import discord
 from discord.ext.commands import group
 
-from cogs.tadhkirah.sqlite_manager import SQLiteManager
-from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
+from deprecated.sqlite_manager import SQLiteManager
+from deprecated.tadhkeer_backend import TadhkeerBackend
 from framework.cog import Cog
 
 
