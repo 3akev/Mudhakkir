@@ -5,7 +5,7 @@ import aiohttp
 import discord
 from bs4 import BeautifulSoup
 
-from cogs.tadhkirah.database_statics import hadith_api_names, hadith_book_translation_dict
+from deprecated.database_statics import hadith_api_names, hadith_book_translation_dict
 from model.recursive_attr_dict import RecursiveAttrDict
 
 
