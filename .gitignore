@@ -101,3 +101,4 @@ error.txt
 /.idea/
 /coverage/
 .benchmarks/
+google_creds.json
