@@ -21,6 +21,6 @@ class YamlFile:
         os.makedirs(os.path.dirname(self.filename), exist_ok=True)
 
         with open(self.filename, 'w', encoding='UTF-8') as f:
-            f.write(yaml.dump(structure.toDict()))
+            f.write(yaml.dump(structure))
 
         DropBoxer.upload(self.filename)
