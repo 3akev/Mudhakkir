@@ -33,7 +33,7 @@ class TadhkeerCommands(Cog):
 
     @tadhkirah.command()
     async def channel(self, ctx, channel: discord.TextChannel):
-        self.default_config['channel_id'] = channel.id
+        ctx.cog_config['channel_id'] = channel.id
         self.bot.configs.save(ctx.guild.id)
         await ctx.send("Alright, I'll be posting reminders in {}.".format(channel.mention))
 
