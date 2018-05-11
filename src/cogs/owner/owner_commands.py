@@ -1,3 +1,5 @@
+from discord.ext import commands
+
 from framework import command
 from framework.cog import Cog
 
@@ -8,6 +10,7 @@ class OwnerCommands(Cog):
         self.default_config['enabled'] = True
         self.configurable = False
 
+    @commands.is_owner()
     @command()
     async def kill(self, ctx):
         await ctx.send("Shutting down...")
