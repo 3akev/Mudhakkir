@@ -4,7 +4,7 @@ from discord.ext import commands
 class ConfigContext(commands.Context):
     @property
     def config(self):
-        return self.bot.configs.get(self.guild.id)
+        return self.bot.config_for(self.guild.id)
 
     @property
     def all_commands(self):
@@ -12,8 +12,8 @@ class ConfigContext(commands.Context):
 
     @property
     def cog_config(self):
-        return self.config.get(self.cog.name)
+        return self.cog.config_for(self.guild.id)
 
     @property
     def cmd_config(self):
-        return self.cog_config.commands.get(self.command.name)
+        return self.command.config_for(self.guild.id)

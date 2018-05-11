@@ -93,3 +93,6 @@ class ArgCommand(commands.Command):
                 name = converter.__class__.__name__
 
             raise BadArgument('Converting to "{}" failed for parameter "{}".'.format(name, param.name)) from e
+
+    def config_for(self, guild_id):
+        return self.instance.config_for(guild_id).commands.get(self.name)

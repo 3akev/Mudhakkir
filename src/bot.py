@@ -14,6 +14,7 @@ from framework.config_manager import ConfigManager
 from statics import cogsDir
 
 
+# TODO: make a custom ConnectionState which instantiates a custom Guild with storage helpers
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(
@@ -56,6 +57,9 @@ class Bot(commands.Bot):
     def populate_configs(self):
         for guild in self.guilds:
             self.configs.populate_config(guild.id)
+
+    def config_for(self, guild_id):
+        return self.configs.get(guild_id)
 
 
 def main():

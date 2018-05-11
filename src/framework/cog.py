@@ -10,3 +10,6 @@ class Cog:
     @property
     def name(self):
         return type(self).__name__
+
+    def config_for(self, guild_id):
+        return self.bot.config_for(guild_id).get(self.name)
