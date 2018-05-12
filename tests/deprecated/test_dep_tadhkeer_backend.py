@@ -4,7 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from deprecated.tadhkeer_backend import TadhkeerBackend
+from deprecated.dep_tadhkeer_backend import TadhkeerBackend
 from statics import parentDir
 
 
