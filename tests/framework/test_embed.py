@@ -3,7 +3,7 @@ from datetime import datetime
 from discord import Colour
 
 from framework.embed import CoolEmbed, get_embed
-from utils.embed import is_embed_valid
+from util.embed import is_embed_valid
 
 
 def test_cool_embed_initializes_color():

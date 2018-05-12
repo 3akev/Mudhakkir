@@ -6,7 +6,7 @@ from pygsheets import Worksheet
 
 from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
 from framework.embed import CoolEmbed
-from utils.embed import is_embed_valid
+from util.embed import is_embed_valid
 
 
 row = ['quran', '', '', '', '', '', '', 'test', '', "Qur'an 94:5-6", '', "00ffff"]

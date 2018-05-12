@@ -6,7 +6,7 @@ import pytest
 
 from deprecated.dep_tadhkeer_backend import TadhkeerBackend
 from statics import parentDir
-from utils.embed import is_embed_valid
+from util.embed import is_embed_valid
 
 
 @pytest.fixture
