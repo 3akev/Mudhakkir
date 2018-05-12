@@ -35,7 +35,7 @@ class TadhkeerCommands(Cog):
         if channel is None:
             channel_id = ctx.cog_config['channel_id']
             if channel_id is None:
-                ctx.send("I'm not posting reminders anywhere. You should set a channel!")
+                await ctx.send("I'm not posting reminders anywhere. You should set a channel!")
             else:
                 channel = ctx.guild.get_channel(channel_id)
                 await ctx.send("I'm posting reminders in {}.".format(channel.mention))
