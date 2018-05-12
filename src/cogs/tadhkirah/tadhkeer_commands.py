@@ -7,6 +7,7 @@ from discord.ext.commands import group
 
 from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
 from framework.cog import Cog
+from framework.permissions import perms
 from model.file import YamlFile
 from statics import storageDir
 
@@ -30,6 +31,7 @@ class TadhkeerCommands(Cog):
 
         await self.post_tadhkirah_in(ctx.channel, category)
 
+    @perms(kick_members=True)
     @tadhkirah.command()
     async def channel(self, ctx, channel: discord.TextChannel = None):
         if channel is None:
@@ -44,6 +46,7 @@ class TadhkeerCommands(Cog):
             self.bot.configs.save(ctx.guild.id)
             await ctx.send("Alright, I'll be posting reminders in {}.".format(channel.mention))
 
+    @perms(kick_members=True)
     @tadhkirah.command()
     async def interval(self, ctx, interval_in_hours: float = None):
         if interval_in_hours is None:

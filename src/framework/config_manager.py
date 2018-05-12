@@ -6,7 +6,7 @@ from model.recursive_attr_dict import RecursiveAttrDict
 from statics import storageDir
 
 
-class ConfigManager:
+class ConfigManager:  # TODO: derive per-cog file management
     def __init__(self, bot):
         self.bot = bot
         self.configs_map = {}
