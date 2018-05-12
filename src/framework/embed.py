@@ -9,6 +9,9 @@ from model.recursive_attr_dict import RecursiveAttrDict
 
 class CoolEmbed(discord.Embed):
     def __init__(self, **kwargs):
+        if isinstance(kwargs.get('colour'), str):
+            kwargs['colour'] = int('0x{}'.format(kwargs.get('colour')), 16)
+
         super().__init__(**kwargs)
         if self.timestamp is EmptyEmbed:
             self.timestamp = datetime.now()
