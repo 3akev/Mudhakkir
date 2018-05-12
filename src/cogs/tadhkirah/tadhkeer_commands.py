@@ -47,7 +47,8 @@ class TadhkeerCommands(Cog):
     @tadhkirah.command()
     async def interval(self, ctx, interval_in_days: float = None):
         if interval_in_days is None:
-            await ctx.send("I'm posting reminders every {} days.".format(ctx.cog_config['interval_in_seconds']))
+            interval_in_days = ctx.cog_config['interval_in_seconds'] / (60 * 60 * 24)
+            await ctx.send("I'm posting reminders every {} days.".format(interval_in_days))
         else:
             ctx.cog_config['interval_in_seconds'] = interval_in_days * 24 * 60 * 60
             self.bot.configs.save(ctx.guild.id)
