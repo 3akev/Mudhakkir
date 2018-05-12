@@ -45,14 +45,14 @@ class TadhkeerCommands(Cog):
             await ctx.send("Alright, I'll be posting reminders in {}.".format(channel.mention))
 
     @tadhkirah.command()
-    async def interval(self, ctx, interval_in_days: float = None):
-        if interval_in_days is None:
-            interval_in_days = ctx.cog_config['interval_in_seconds'] / (60 * 60 * 24)
-            await ctx.send("I'm posting reminders every {} days.".format(interval_in_days))
+    async def interval(self, ctx, interval_in_hours: float = None):
+        if interval_in_hours is None:
+            interval_in_hours = ctx.cog_config['interval_in_seconds'] / (60 * 60)
+            await ctx.send("I'm posting reminders every {} hour(s).".format(interval_in_hours))
         else:
-            ctx.cog_config['interval_in_seconds'] = interval_in_days * 24 * 60 * 60
+            ctx.cog_config['interval_in_seconds'] = interval_in_hours * 60 * 60
             self.bot.configs.save(ctx.guild.id)
-            await ctx.send("Alright, I'll be posting reminders every {} days.".format(interval_in_days))
+            await ctx.send("Alright, I'll be posting reminders every {} hour(s).".format(interval_in_hours))
 
     async def post_tadhkirah_in(self, channel, category = None):
         if category is None:
