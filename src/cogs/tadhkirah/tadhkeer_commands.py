@@ -6,7 +6,6 @@ import discord
 from discord.ext.commands import group
 
 from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
-from framework import ArgCommand
 from framework.cog import Cog
 from model.file import YamlFile
 from statics import storageDir
@@ -14,7 +13,6 @@ from statics import storageDir
 
 class TadhkeerCommands(Cog):
     data_file_name = 'tadhkeer.yaml'
-    remind_interval_in_seconds = 86400
 
     def __init__(self, bot):
         super().__init__(bot)
@@ -22,6 +20,7 @@ class TadhkeerCommands(Cog):
 
         self.default_config['enabled'] = True
         self.default_config['channel_id'] = None
+        self.default_config['interval_in_seconds'] = 86400
         self.bot.loop.create_task(self.remind())
 
     @group()
@@ -37,10 +36,11 @@ class TadhkeerCommands(Cog):
         self.bot.configs.save(ctx.guild.id)
         await ctx.send("Alright, I'll be posting reminders in {}.".format(channel.mention))
 
-    # submission
-    @tadhkirah.command(cls=ArgCommand)
-    async def submit(self, ctx):
-        pass
+    @tadhkirah.command()
+    async def interval(self, ctx, interval_in_days: float):
+        ctx.cog_config['interval_in_seconds'] = interval_in_days * 24 * 60 * 60
+        self.bot.configs.save(ctx.guild.id)
+        await ctx.send("Alright, I'll be posting reminders every {} a day.".format(interval_in_days))
 
     async def post_tadhkirah_in(self, channel):
         embed = await self.backend.get_random()
@@ -60,7 +60,7 @@ class TadhkeerCommands(Cog):
 
                 last_tadhkirah_timestamp = datetime.fromtimestamp(data_file.read().last_tadhkirah_timestamp)
 
-                if datetime.now() - last_tadhkirah_timestamp > timedelta(seconds=self.remind_interval_in_seconds):
+                if datetime.now() - last_tadhkirah_timestamp > timedelta(seconds=conf.interval_in_seconds):
                     await self.post_tadhkirah_in(guild.get_channel(conf.channel_id))
                     data_file.write({'last_tadhkirah_timestamp': datetime.now().timestamp()})
 
