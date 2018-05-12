@@ -24,11 +24,11 @@ class TadhkeerCommands(Cog):
         self.bot.loop.create_task(self.remind())
 
     @group()
-    async def tadhkirah(self, ctx):
+    async def tadhkirah(self, ctx, category: str = None):
         if ctx.invoked_subcommand is not None:
             return
 
-        await self.post_tadhkirah_in(ctx.channel)
+        await self.post_tadhkirah_in(ctx.channel, category)
 
     @tadhkirah.command()
     async def channel(self, ctx, channel: discord.TextChannel = None):
@@ -54,8 +54,12 @@ class TadhkeerCommands(Cog):
             self.bot.configs.save(ctx.guild.id)
             await ctx.send("Alright, I'll be posting reminders every {} days.".format(interval_in_days))
 
-    async def post_tadhkirah_in(self, channel):
-        embed = await self.backend.get_random()
+    async def post_tadhkirah_in(self, channel, category = None):
+        if category is None:
+            embed = await self.backend.get_random()
+        else:
+            embed = await self.backend.get_from_category(category)
+
         await channel.send(embed=embed)
 
     async def remind(self):
