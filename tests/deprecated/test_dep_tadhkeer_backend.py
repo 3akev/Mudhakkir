@@ -6,6 +6,7 @@ import pytest
 
 from deprecated.dep_tadhkeer_backend import TadhkeerBackend
 from statics import parentDir
+from utils.embed import is_embed_valid
 
 
 @pytest.fixture
@@ -16,23 +17,6 @@ def td():
 
 
 def test_process_response_returns_two_correct_embeds(td):
-    def is_embed_valid(embed):
-        footer_length = (len(embed.footer.text) if embed.footer else 0)
-        assert len(embed.title) < 256
-        assert len(embed.description) < 2048
-        assert len(embed.author.name) < 256
-        assert len(embed.fields) < 25
-        for field in embed.fields:
-            assert len(field.name) < 256
-            assert len(field.value) < 1024
-        assert footer_length < 2048
-        assert (
-            len(embed.title)
-            + len(embed.description)
-            + len(embed.author.name)
-            + sum(len(field.name) + len(field.value) for field in embed.fields)
-            + footer_length
-        ) < 6000
 
     for i in range(1, 4):
         file = os.path.join(parentDir, 'tests/test_resources/quran_resp{0}.json'.format(i))
@@ -40,8 +24,8 @@ def test_process_response_returns_two_correct_embeds(td):
             resp = json.loads(f.read())
 
         ar_embed, en_embed = td._process_response(resp)
-        is_embed_valid(ar_embed)
-        is_embed_valid(en_embed)
+        assert is_embed_valid(ar_embed)
+        assert is_embed_valid(en_embed)
 
 
 def test_get_quran_link_formats_quran_link_according_to_api(td):

@@ -61,5 +61,3 @@ class TadhkeerBackend:
 
         random_cell = random.choice(curated_cells)
         return await self._get(random_cell.row)
-
-

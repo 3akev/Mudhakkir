@@ -23,8 +23,8 @@ class TadhkeerCommands(Cog):
         self.default_config['interval_in_seconds'] = 86400
         self.bot.loop.create_task(self.remind())
 
-    @group()
-    async def tadhkirah(self, ctx, category: str = None):
+    @group(aliases=['reminder'], invoke_without_command=True)
+    async def tadhkirah(self, ctx, category = None):
         if ctx.invoked_subcommand is not None:
             return
 
