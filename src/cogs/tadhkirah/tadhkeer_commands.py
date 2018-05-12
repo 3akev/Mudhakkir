@@ -31,16 +31,27 @@ class TadhkeerCommands(Cog):
         await self.post_tadhkirah_in(ctx.channel)
 
     @tadhkirah.command()
-    async def channel(self, ctx, channel: discord.TextChannel):
-        ctx.cog_config['channel_id'] = channel.id
-        self.bot.configs.save(ctx.guild.id)
-        await ctx.send("Alright, I'll be posting reminders in {}.".format(channel.mention))
+    async def channel(self, ctx, channel: discord.TextChannel = None):
+        if channel is None:
+            channel_id = ctx.cog_config['channel_id']
+            if channel_id is None:
+                ctx.send("I'm not posting reminders anywhere. You should set a channel!")
+            else:
+                channel = ctx.guild.get_channel(channel_id)
+                await ctx.send("I'm posting reminders in {}.".format(channel.mention))
+        else:
+            ctx.cog_config['channel_id'] = channel.id
+            self.bot.configs.save(ctx.guild.id)
+            await ctx.send("Alright, I'll be posting reminders in {}.".format(channel.mention))
 
     @tadhkirah.command()
-    async def interval(self, ctx, interval_in_days: float):
-        ctx.cog_config['interval_in_seconds'] = interval_in_days * 24 * 60 * 60
-        self.bot.configs.save(ctx.guild.id)
-        await ctx.send("Alright, I'll be posting reminders every {} a day.".format(interval_in_days))
+    async def interval(self, ctx, interval_in_days: float = None):
+        if interval_in_days is None:
+            await ctx.send("I'm posting reminders every {} days.".format(ctx.cog_config['interval_in_seconds']))
+        else:
+            ctx.cog_config['interval_in_seconds'] = interval_in_days * 24 * 60 * 60
+            self.bot.configs.save(ctx.guild.id)
+            await ctx.send("Alright, I'll be posting reminders every {} days.".format(interval_in_days))
 
     async def post_tadhkirah_in(self, channel):
         embed = await self.backend.get_random()
