@@ -31,6 +31,10 @@ class TadhkeerCommands(Cog):
 
         await self.post_tadhkirah_in(ctx.channel, category)
 
+    @tadhkirah.command()
+    async def id(self, ctx, n: int):
+        await ctx.send(embed=await self.backend.get_by_id(n))
+
     @perms(kick_members=True)
     @tadhkirah.command()
     async def channel(self, ctx, channel: discord.TextChannel = None):

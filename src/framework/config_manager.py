@@ -29,10 +29,9 @@ class ConfigManager:  # TODO: derive per-cog file management
             else:
                 conf[cog_key] = cog_inst.default_config
 
-            if not conf[cog_key].get('commands'):
-                # Populate config for each command in cog
-                conf[cog_key]['commands'] = {}
-                for command in [obj for obj in type(cog_inst).__dict__.values() if isinstance(obj, ConfCommand)]:
+            # Populate config for each command in cog
+            for command in [obj for obj in type(cog_inst).__dict__.values() if isinstance(obj, ConfCommand)]:
+                if not conf[cog_key]['commands'].get(command.name):
                     conf[cog_key]['commands'][command.name] = command.default_config
 
         self.configs_map[str(guild_id)] = RecursiveAttrDict(conf)

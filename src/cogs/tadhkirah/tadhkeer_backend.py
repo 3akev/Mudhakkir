@@ -61,3 +61,7 @@ class TadhkeerBackend:
 
         random_cell = random.choice(curated_cells)
         return await self._get(random_cell.row)
+
+    async def get_by_id(self, n):
+        await self._wait_for_ready()
+        return await self._get(n)
