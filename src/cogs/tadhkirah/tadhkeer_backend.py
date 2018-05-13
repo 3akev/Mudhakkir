@@ -35,7 +35,7 @@ class TadhkeerBackend:
                 self._readying = False
             else:
                 while self._readying:
-                    await asyncio.sleep(50)
+                    await asyncio.sleep(0.25)
 
     def _make_embed(self, row):
         embed_dict = dict(zip(self._header_row, row))
