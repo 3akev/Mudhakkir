@@ -6,6 +6,7 @@ import discord
 from bs4 import BeautifulSoup
 
 from deprecated.database_statics import hadith_api_names, hadith_book_translation_dict
+from framework.embed import CoolEmbed
 from model.recursive_attr_dict import RecursiveAttrDict
 
 
@@ -18,7 +19,7 @@ class TadhkeerBackend:
         self.client_session = aiohttp.ClientSession()
 
     def _make_quran_embed(self, title, surah_name, surah_number, ayahs, author_name):
-        embed = discord.Embed(
+        embed = CoolEmbed(
             title=title,
             description='{0} - {1}'.format(surah_name, surah_number),
             colour=65280  # that is, green
@@ -85,7 +86,7 @@ class TadhkeerBackend:
 
     @staticmethod
     def _make_hadith_embed(title, hadith_text, narrator=None):
-        embed = discord.Embed(
+        embed = CoolEmbed(
             title=title,
             description=('{0}\n***{1}***'.format(narrator, hadith_text) if narrator else hadith_text),
             colour=65280  # that is, green

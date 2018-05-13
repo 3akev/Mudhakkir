@@ -1,11 +1,13 @@
 from discord.embeds import EmptyEmbed
 
+from framework.embed import CoolEmbed
+
 
 def is_embed_valid(embed):  # TODO: add appropriate url checking
     type(EmptyEmbed).__len__ = lambda s: 0
 
     footer_length = (len(embed.footer.text) if embed.footer else 0)
-    ret = True
+    ret = isinstance(embed, CoolEmbed)
     ret = ret and len(embed.title) < 256
     ret = ret and len(embed.description) < 2048
     ret = ret and len(embed.author.name) < 256

@@ -31,5 +31,4 @@ def test_get_embed_returns_embed():
 
     e = get_embed(d)
 
-    assert isinstance(e, CoolEmbed)
     assert is_embed_valid(e)
