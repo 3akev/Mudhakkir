@@ -6,6 +6,7 @@ import os
 
 import discord
 from discord.ext import commands
+from discord.ext.commands import DisabledCommand, UserInputError
 
 from config import description, PREFIX
 from dropboxer import DropBoxer
@@ -14,7 +15,6 @@ from framework.config_manager import ConfigManager
 from statics import cogsDir
 
 
-# TODO: make a custom ConnectionState which instantiates a custom Guild with storage helpers
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(
@@ -53,6 +53,12 @@ class Bot(commands.Bot):
                     except Exception:
                         logging.error(f'Error on loading {i}: {traceback.format_exc()}')
         print('Loaded.')
+
+    async def on_command_error(self, ctx, exception):
+        if isinstance(exception, (DisabledCommand, UserInputError)):
+            await ctx.send(str(exception))
+        else:
+            await super().on_command_error(ctx, exception)
 
     def populate_configs(self):
         for guild in self.guilds:
