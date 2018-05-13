@@ -3,9 +3,9 @@ import os
 from datetime import datetime, timedelta
 
 import discord
-from discord.ext.commands import group
 
 from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
+from framework import group
 from framework.cog import Cog
 from framework.permissions import perms
 from model.file import YamlFile

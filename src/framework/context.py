@@ -1,5 +1,7 @@
 from discord.ext import commands
 
+from model.recursive_attr_dict import RecursiveAttrDict
+
 
 class ConfigContext(commands.Context):
     @property
@@ -8,7 +10,10 @@ class ConfigContext(commands.Context):
 
     @property
     def all_commands(self):
-        return [conf.commands for conf in self.config.values()]
+        ret = RecursiveAttrDict()
+        for conf in self.config.values():
+            ret.update(conf.commands)
+        return ret
 
     @property
     def cog_config(self):

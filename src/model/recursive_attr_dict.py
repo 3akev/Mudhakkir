@@ -1,7 +1,7 @@
-from munch import AutoMunch
+from munch import Munch
 
 
-class RecursiveAttrDict(AutoMunch):
+class RecursiveAttrDict(Munch):
     def __getitem__(self, item):
         ret = super().__getitem__(item)
         if isinstance(ret, dict):

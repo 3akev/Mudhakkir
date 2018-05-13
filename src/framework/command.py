@@ -1,14 +1,31 @@
-import discord
 from discord.ext import commands
-from discord.ext.commands import CommandError, BadArgument, DisabledCommand
+from discord.ext.commands import DisabledCommand
+from discord.ext.commands.core import hooked_wrapped_callback
+from discord.ext.commands import command as old_command
 
-from model import argparser
+
+def command(name=None, conf=None, **attrs):
+    return old_command(
+        name,
+        ConfCommand,
+        default_config=conf,
+        **attrs
+    )
 
 
-class ArgCommand(commands.Command):
+def group(name=None, conf=None, **attrs):
+    return old_command(
+        name,
+        ConfGroup,
+        default_config=conf,
+        **attrs
+    )
+
+
+class ConfCommand(commands.Command):
     def __init__(self, name, callback, **kwargs):
         super().__init__(name, callback, **kwargs)
-        self.default_config = kwargs.get('default_config', {'enabled': True})
+        self.default_config = kwargs.get('default_config') or {'enabled': True}
 
     async def _verify_checks(self, ctx):
         if not ctx.cog_config.enabled:
@@ -18,81 +35,97 @@ class ArgCommand(commands.Command):
         else:
             super()._verify_checks(ctx)
 
-    async def _parse_arguments(self, ctx):
-        ctx.args = [ctx] if self.instance is None else [self.instance, ctx]
-        ctx.kwargs = {}
-        args = ctx.args
-        kwargs = ctx.kwargs
-
-        iterator = iter(self.params.items())
-
-        if self.instance is not None:
-            # we have 'self' as the first parameter so just advance
-            # the iterator and resume parsing
-            try:
-                next(iterator)
-            except StopIteration:
-                fmt = 'Callback for {0.name} command is missing "self" parameter.'
-                raise discord.ClientException(fmt.format(self))
-
-        # next we have the 'ctx' as the next parameter
-        try:
-            next(iterator)
-        except StopIteration:
-            fmt = 'Callback for {0.name} command is missing "ctx" parameter.'
-            raise discord.ClientException(fmt.format(self))
-
-        # skip command name
-        ctx.view.get_word()
-        ctx.view.skip_ws()
-
-        raw_args, raw_kwargs = argparser.parse(ctx.view.buffer[ctx.view.index:])
-
-        for name, param in iterator:
-            if param.kind is param.POSITIONAL_OR_KEYWORD:  # i.e: normal args
-                is_required = param.default is param.empty
-                if name in raw_kwargs:
-                    kwargs[name] = await self.convert_arg(ctx, param, raw_kwargs[name])
-                elif len(raw_args) > 0:  # there's still some args
-                    args.append(await self.convert_arg(ctx, param, raw_args.pop(0)))
-                elif not is_required:  # it's neither in kwargs nor args, but there's a default value
-                    args.append(param.default)
-                else:
-                    raise BadArgument(f'Required argument {name} not supplied')
-
-            elif param.kind is param.KEYWORD_ONLY:  # i.e: after *,
-                is_required = param.default is param.empty
-                if name in raw_kwargs:
-                    kwargs[name] = await self.convert_arg(ctx, param, raw_kwargs[name])
-                elif not is_required:
-                    kwargs[name] = param.default
-                else:
-                    raise BadArgument(f'Required keyword only argument {name} not supplied')
-
-            elif param.kind is param.VAR_POSITIONAL:  # i.e: *args
-                for arg in raw_args:
-                    if arg != '':
-                        args.append(await self.convert_arg(ctx, param, arg))
-
-            elif param.kind is param.VAR_KEYWORD:  # i.e: **kwargs
-                for k, v in raw_kwargs.items():
-                    if k not in kwargs:
-                        kwargs[k] = await self.convert_arg(ctx, param, v)
-
-    async def convert_arg(self, ctx, param, arg):
-        converter = self._get_converter(param)
-
-        try:
-            return await self.do_conversion(ctx, converter, arg)
-        except CommandError as e:
-            raise e
-        except Exception as e:
-            try:
-                name = converter.__name__
-            except AttributeError:
-                name = converter.__class__.__name__
-
-            raise BadArgument('Converting to "{}" failed for parameter "{}".'.format(name, param.name)) from e
-
     def config_for(self, guild_id):
         return self.instance.config_for(guild_id).commands.get(self.name)
+
+
+class ConfGroup(commands.GroupMixin, ConfCommand):
+    def __init__(self, **attrs):
+        self.invoke_without_command = attrs.pop('invoke_without_command', False)
+        super().__init__(**attrs)
+
+    async def invoke(self, ctx):
+        early_invoke = not self.invoke_without_command
+        if early_invoke:
+            await self.prepare(ctx)
+
+        view = ctx.view
+        previous = view.index
+        view.skip_ws()
+        trigger = view.get_word()
+
+        if trigger:
+            ctx.subcommand_passed = trigger
+            ctx.invoked_subcommand = self.all_commands.get(trigger, None)
+
+        if early_invoke:
+            injected = hooked_wrapped_callback(self, ctx, self.callback)
+            await injected(*ctx.args, **ctx.kwargs)
+
+        if trigger and ctx.invoked_subcommand:
+            ctx.invoked_with = trigger
+            await ctx.invoked_subcommand.invoke(ctx)
+        elif not early_invoke:
+            # undo the trigger parsing
+            view.index = previous
+            view.previous = previous
+            await super().invoke(ctx)
+
+    async def reinvoke(self, ctx, *, call_hooks=False):
+        early_invoke = not self.invoke_without_command
+        if early_invoke:
+            ctx.command = self
+            await self._parse_arguments(ctx)
+
+            if call_hooks:
+                await self.call_before_hooks(ctx)
+
+        view = ctx.view
+        previous = view.index
+        view.skip_ws()
+        trigger = view.get_word()
+
+        if trigger:
+            ctx.subcommand_passed = trigger
+            ctx.invoked_subcommand = self.all_commands.get(trigger, None)
+
+        if early_invoke:
+            try:
+                await self.callback(*ctx.args, **ctx.kwargs)
+            except:
+                ctx.command_failed = True
+                raise
+            finally:
+                if call_hooks:
+                    await self.call_after_hooks(ctx)
+
+        if trigger and ctx.invoked_subcommand:
+            ctx.invoked_with = trigger
+            await ctx.invoked_subcommand.reinvoke(ctx, call_hooks=call_hooks)
+        elif not early_invoke:
+            # undo the trigger parsing
+            view.index = previous
+            view.previous = previous
+            await super().reinvoke(ctx, call_hooks=call_hooks)
+
+    def command(self, *args, **kwargs):
+        """A shortcut decorator that invokes :func:`.command` and adds it to
+        the internal command list via :meth:`~.GroupMixin.add_command`.
+        """
+        def decorator(func):
+            result = command(*args, **kwargs)(func)
+            self.add_command(result)
+            return result
+
+        return decorator
+
+    def group(self, *args, **kwargs):
+        """A shortcut decorator that invokes :func:`.group` and adds it to
+        the internal command list via :meth:`~.GroupMixin.add_command`.
+        """
+        def decorator(func):
+            result = group(*args, **kwargs)(func)
+            self.add_command(result)
+            return result
+
+        return decorator

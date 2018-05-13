@@ -1,5 +1,6 @@
 from framework import command
 from framework.cog import Cog
+from framework.permissions import perms
 
 
 class ConfigCommands(Cog):
@@ -9,22 +10,23 @@ class ConfigCommands(Cog):
         self.configurable = False
 
     def _enable_disable_conf(self, ctx, cog_or_command, value):
-        if cog_or_command in ctx.config:  # it's a cog
-            if self.bot.cogs.get(cog_or_command).configurable:
-                ctx.config[cog_or_command].enabled = value
+        if self.bot.get_cog(cog_or_command):
+            if self.bot.get_cog(cog_or_command).configurable:
+                setattr(self.bot.get_cog(cog_or_command).config_for(ctx.guild.id), 'enabled', value)
                 self.bot.configs.save(ctx.guild.id)
                 return True
             else:
                 return "This cog isn't configurable."
 
-        elif cog_or_command in ctx.all_commands:  # it's a command
-            ctx.all_commands[cog_or_command].enabled = value
+        elif self.bot.get_command(cog_or_command):
+            setattr(self.bot.get_command(cog_or_command).config_for(ctx.guild.id), 'enabled', value)
             self.bot.configs.save(ctx.guild.id)
             return True
 
         else:
             return "Invalid cog or command name."
 
+    @perms(kick_members=True)
     @command()
     async def enable(self, ctx, cog_or_command):
         ret = self._enable_disable_conf(ctx, cog_or_command, True)
@@ -33,6 +35,7 @@ class ConfigCommands(Cog):
         else:
             await ctx.send(ret)
 
+    @perms(kick_members=True)
     @command()
     async def disable(self, ctx, cog_or_command):
         ret = self._enable_disable_conf(ctx, cog_or_command, False)

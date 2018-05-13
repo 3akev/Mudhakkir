@@ -2,6 +2,8 @@ import yaml
 
 import os
 
+from munch import Munch
+
 from dropboxer import DropBoxer
 from model.recursive_attr_dict import RecursiveAttrDict
 
@@ -19,6 +21,9 @@ class YamlFile:
 
     def write(self, structure):
         os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+
+        if isinstance(structure, Munch):
+            structure = structure.toDict()
 
         with open(self.filename, 'w', encoding='UTF-8') as f:
             f.write(yaml.dump(structure))

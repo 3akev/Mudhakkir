@@ -1,6 +1,6 @@
 import os
 
-from framework import ArgCommand
+from framework.command import ConfCommand
 from model.file import YamlFile
 from model.recursive_attr_dict import RecursiveAttrDict
 from statics import storageDir
@@ -32,7 +32,7 @@ class ConfigManager:  # TODO: derive per-cog file management
             if not conf[cog_key].get('commands'):
                 # Populate config for each command in cog
                 conf[cog_key]['commands'] = {}
-                for command in [obj for obj in type(cog_inst).__dict__.values() if isinstance(obj, ArgCommand)]:
+                for command in [obj for obj in type(cog_inst).__dict__.values() if isinstance(obj, ConfCommand)]:
                     conf[cog_key]['commands'][command.name] = command.default_config
 
         self.configs_map[str(guild_id)] = RecursiveAttrDict(conf)
