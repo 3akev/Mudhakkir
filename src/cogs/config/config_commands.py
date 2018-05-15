@@ -29,6 +29,12 @@ class ConfigCommands(Cog):
     @perms(kick_members=True)
     @command()
     async def enable(self, ctx, cog_or_command):
+        """
+        Enable a command or a category
+
+        The name you give is case-sensitive.
+        Note that some commands(such as this one) can not be configured.
+        """
         ret = self._enable_disable_conf(ctx, cog_or_command, True)
         if ret is True:  # success
             await ctx.send("Enabled {} successfully.".format(cog_or_command))
@@ -38,6 +44,12 @@ class ConfigCommands(Cog):
     @perms(kick_members=True)
     @command()
     async def disable(self, ctx, cog_or_command):
+        """
+        Disable a command or a category
+
+        The name you give is case-sensitive.
+        Note that some commands(such as this one) can not be configured.
+        """
         ret = self._enable_disable_conf(ctx, cog_or_command, False)
         if ret is True:  # success
             await ctx.send("Disabled {} successfully.".format(cog_or_command))
