@@ -13,5 +13,8 @@ class OwnerCommands(Cog):
     @commands.is_owner()
     @command()
     async def kill(self, ctx):
+        """
+        Kills the bot. It'll boot back up in a pinch.
+        """
         await ctx.send("Shutting down...")
         exit()

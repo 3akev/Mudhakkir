@@ -26,6 +26,9 @@ class TadhkeerCommands(Cog):
 
     @group(aliases=['reminder'], invoke_without_command=True)
     async def tadhkirah(self, ctx, category = None):
+        """
+        Get a random reminder, optionally from a specific category
+        """
         if ctx.invoked_subcommand is not None:
             return
 
@@ -33,11 +36,17 @@ class TadhkeerCommands(Cog):
 
     @tadhkirah.command()
     async def id(self, ctx, n: int):
+        """
+        Get a reminder by its row number in the sheet
+        """
         await ctx.send(embed=await self.backend.get_by_id(n))
 
     @perms(kick_members=True)
     @tadhkirah.command()
     async def channel(self, ctx, channel: discord.TextChannel = None):
+        """
+        Get or set the channel to post reminders in
+        """
         if channel is None:
             channel_id = ctx.cog_config['channel_id']
             if channel_id is None:
@@ -53,6 +62,15 @@ class TadhkeerCommands(Cog):
     @perms(kick_members=True)
     @tadhkirah.command()
     async def interval(self, ctx, interval_in_hours: float = None):
+        """
+        Get or set how often the bot posts in the configured channel.
+
+        The minimum value for this is 0.25. That is, 15 minutes.
+        If you try to set a value lower than that, it'll work, but the bot won't post
+        more often than that.
+
+        Defaults to 24 hours.
+        """
         if interval_in_hours is None:
             interval_in_hours = ctx.cog_config['interval_in_seconds'] / (60 * 60)
             await ctx.send("I'm posting reminders every {} hour(s).".format(interval_in_hours))
