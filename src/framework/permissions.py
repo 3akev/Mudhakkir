@@ -1,6 +1,8 @@
 from discord.ext import commands
 from discord.ext.commands import MissingPermissions
 
+from config import OWNER_IDS
+
 
 def permcheck(ctx, **perms):
     if ctx.bot.is_owner(ctx.author):
@@ -20,6 +22,12 @@ def permcheck(ctx, **perms):
             return True
         else:
             raise MissingPermissions(missing)
+
+
+def is_owner():
+    async def predicate(ctx):
+        return (await ctx.bot.is_owner(ctx.author)) or ctx.author.id in OWNER_IDS
+    return commands.check(predicate)
 
 
 def perms(**perms):
