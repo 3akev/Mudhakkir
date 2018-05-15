@@ -28,6 +28,12 @@ class TadhkeerCommands(Cog):
     async def tadhkirah(self, ctx, category = None):
         """
         Get a random reminder, optionally from a specific category
+
+        To configure the bot to post reminders in a certain channel,
+        run `tadhkirah channel #channel-mention` and you're set!
+
+        By default, the bot will post there every 24 hours. You
+        can change that with the `tadhkirah interval` command.
         """
         if ctx.invoked_subcommand is not None:
             return
