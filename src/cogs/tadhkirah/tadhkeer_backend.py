@@ -54,10 +54,9 @@ class TadhkeerBackend:
 
     async def get_from_category(self, category):
         await self._wait_for_ready()
-        category_range = await self.loop.run_in_executor(None, self._sheet.get_named_range, 'category')
-        await self.loop.run_in_executor(None, category_range.fetch)
-        flattened_cells = [c[0] for c in category_range.cells][1:]  # exclude header
-        curated_cells = [c for c in flattened_cells if c.value == category]
+        category_cells = await self.loop.run_in_executor(None, lambda: self._sheet.get_col(1, returnas='cell'))
+        category_cells_without_header = category_cells[1:]
+        curated_cells = [c for c in category_cells_without_header if c.value == category]
 
         random_cell = random.choice(curated_cells)
         return await self._get(random_cell.row)

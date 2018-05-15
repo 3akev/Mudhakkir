@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, Mock
 
 import pytest
-from pygsheets import Worksheet, DataRange, Cell
+from pygsheets import Worksheet, Cell
 
 from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
 from util.async import get_mock_coro
@@ -96,10 +96,8 @@ async def test_get_random_gets_random_tadhkirah_from_sheet(tb):
 
 @pytest.mark.asyncio
 async def test_get_random_from_category_gets_random_row_within_category(tb):
-    range_mock = MagicMock(DataRange)
-    tb._sheet.get_named_range.return_value = range_mock
-    range_mock.cells = [
-        [MagicMock(spec=Cell, value=x[0], row=ind + 1)]
+    tb._sheet.get_col.return_value = [
+        MagicMock(spec=Cell, value=x[0], row=ind + 1)
         for ind, x in enumerate(rows)
     ]
 
