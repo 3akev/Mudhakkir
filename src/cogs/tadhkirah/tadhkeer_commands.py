@@ -7,7 +7,7 @@ import discord
 from cogs.tadhkirah.tadhkeer_backend import TadhkeerBackend
 from framework import group
 from framework.cog import Cog
-from framework.permissions import perms
+from framework.permissions import perms, is_owner
 from model.file import YamlFile
 from statics import storageDir
 
@@ -84,6 +84,12 @@ class TadhkeerCommands(Cog):
             ctx.cog_config['interval_in_seconds'] = interval_in_hours * 60 * 60
             self.bot.configs.save(ctx.guild.id)
             await ctx.send("Alright, I'll be posting reminders every {} hour(s).".format(interval_in_hours))
+
+    @is_owner()
+    @tadhkirah.command()
+    async def refresh(self):
+        """Refresh sheet data"""
+        await self.backend.refresh()
 
     async def post_tadhkirah_in(self, channel, category = None):
         if category is None:

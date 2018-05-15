@@ -64,3 +64,6 @@ class TadhkeerBackend:
     async def get_by_id(self, n):
         await self._wait_for_ready()
         return await self._get(n)
+
+    async def refresh(self):
+        await self.loop.run_in_executor(None, self._sheet.refresh, True)
