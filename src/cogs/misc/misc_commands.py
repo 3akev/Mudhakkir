@@ -17,16 +17,25 @@ class MiscCommands(Cog):
 
     @command()
     async def invite(self, ctx):
+        """
+        Get a link to invite the bot to your server.
+        """
         app_info = await self.bot.application_info()
         url = self.invite_url.format(app_info.id)
         await ctx.send(url)
 
     @command()
     async def support(self, ctx):
+        """
+        Instructions on getting support.
+        """
         await ctx.send("For support, join this server and drop ala#2941 a mention: " + self.server_invite)
 
     @command()
     async def contribute(self, ctx):
+        """
+        Contribute to the bot
+        """
         s = (
             "You can help us in numerous ways:\n"
             "  1) Making dua that Allah accepts this project and rewards everyone involved.\n"
@@ -38,4 +47,7 @@ class MiscCommands(Cog):
 
     @command()
     async def sheet(self, ctx):
+        """
+        The bot's treasure trove of reminders.
+        """
         await ctx.send('View the sheet whence this bot gets its reminders here: ' + self.spreadsheet_url)
