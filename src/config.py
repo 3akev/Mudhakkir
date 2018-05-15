@@ -5,4 +5,4 @@ OwnerIDs = [
     "164200221746790400"
 ]
 description = \
-    """A discord bot"""
+    """A discord bot for posting islamic reminders"""

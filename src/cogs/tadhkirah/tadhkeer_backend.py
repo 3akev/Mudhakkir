@@ -13,7 +13,7 @@ from statics import storageDir
 class TadhkeerBackend:
     google_creds_file = os.path.join(storageDir, 'google_creds.json')
     scope = ['https://spreadsheets.google.com/feeds']
-    sheet_name = 'Reminders'
+    sheet_name = 'Islamic Reminders'
 
     def __init__(self, loop):
         self.loop: AbstractEventLoop = loop
