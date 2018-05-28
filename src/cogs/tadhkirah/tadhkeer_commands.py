@@ -12,6 +12,7 @@ from model.file import YamlFile
 from statics import storageDir
 
 
+# TODO: command to list all availabe categories
 class TadhkeerCommands(Cog):
     data_file_name = 'tadhkeer.yaml'
 

@@ -60,6 +60,9 @@ class Bot(commands.Bot):
         else:
             await super().on_command_error(ctx, exception)
 
+    async def on_guild_join(self, guild):
+        self.configs.populate_config(guild.id)
+
     def populate_configs(self):
         for guild in self.guilds:
             self.configs.populate_config(guild.id)
